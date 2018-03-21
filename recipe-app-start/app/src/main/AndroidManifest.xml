@@ -25,8 +25,21 @@
             android:name=".client.RecipeActivity"
             android:label="@string/app_name"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:theme="@android:style/Theme.Holo.NoActionBar">
+            <intent-filter>
+                <!-- Sets the intent action to view the activity -->
+                <action android:name="android.intent.action.VIEW" />
+                <!-- Allows the link to be opened from a web browser -->
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Allows the deep link to be used without specifying the app name -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- URI tutsplus://deeplink -->
+                <!--<data android:scheme="tutsplus" android:host="deeplink"/>-->
+                <data android:scheme="https" android:host="google.com"/>
+                <!-- URI http://www.mydeeplink.com -->
+                <data android:scheme="http" android:host="google.com"/>
+            </intent-filter>
         </activity>
 
         <provider

@@ -28,8 +28,6 @@ import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -71,6 +69,25 @@ public class RecipeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+        processDeepLink(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        processDeepLink(intent);
+    }
+
+    private void processDeepLink(Intent intent) {
+        Uri uri = intent.getData();
+        String action = intent.getAction();
+        Bundle bundle = intent.getExtras();
+        Log.d("RecipeActivity", "bundle size::"+bundle.size()+"::Uri::"+uri);
+        String st = uri.getQuery();
+        if(uri.getQueryParameter("recipeId") != null) {
+            Toast.makeText(getApplicationContext(), "Recipe for:"+uri.getQueryParameter("recipeId"),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showRecipe(Uri recipeUri) {
