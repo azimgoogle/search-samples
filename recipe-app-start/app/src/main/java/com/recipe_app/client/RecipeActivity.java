@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -37,6 +38,11 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.recipe_app.R;
 import com.recipe_app.client.content_provider.RecipeContentProvider;
 import com.recipe_app.client.database.RecipeTable;
@@ -69,6 +75,40 @@ public class RecipeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+
+        FirebaseApp.initializeApp(getApplicationContext());
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData data) {
+                        if (data == null) {
+                            Log.d("NULL DATA  ", "getInvitation: no data");
+                            return;
+                        }
+
+                        // Get the deep link
+                        Uri deepLink = data.getLink();
+                        String requestId2 = deepLink.getQueryParameter("recipeId");
+
+
+                        // Handle the deep link
+                        // [START_EXCLUDE]
+                        Log.d("DEEP LINK URL  ", "deepLink:" + deepLink);
+
+                        String s = "Recipe id:"+deepLink.getQueryParameter("recipeId") +
+                                "::Recipe Name:"+deepLink.getQueryParameter("recipeName");
+                        Toast.makeText(getApplicationContext(), s,
+                                Toast.LENGTH_LONG).show();
+                        // [END_EXCLUDE]
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("onFailure:  ", "getDynamicLink:onFailure", e);
+                    }
+                });
+
         processDeepLink(getIntent());
     }
 
@@ -82,11 +122,14 @@ public class RecipeActivity extends Activity {
         Uri uri = intent.getData();
         String action = intent.getAction();
         Bundle bundle = intent.getExtras();
-        Log.d("RecipeActivity", "bundle size::"+bundle.size()+"::Uri::"+uri);
+//        Log.d("RecipeActivity", "bundle size::"+bundle.size()+"::Uri::"+uri);
         String st = uri.getQuery();
         if(uri.getQueryParameter("recipeId") != null) {
-            Toast.makeText(getApplicationContext(), "Recipe for:"+uri.getQueryParameter("recipeId"),
-                    Toast.LENGTH_LONG).show();
+            String s = "Recipe id:"+uri.getQueryParameter("recipeId") +
+                    "::Recipe Name:"+uri.getQueryParameter("recipeName");
+//            Toast.makeText(getApplicationContext(), s,
+//                    Toast.LENGTH_LONG).show();
+            Log.d(getClass().getSimpleName(), s);
         }
     }
 
