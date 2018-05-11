@@ -30,16 +30,17 @@
             android:theme="@android:style/Theme.Holo.NoActionBar">
             <intent-filter>
                 <!-- Sets the intent action to view the activity -->
+                <!--Only viewable action. Others like send...-->
                 <action android:name="android.intent.action.VIEW" />
-                <!-- Allows the link to be opened from a web browser -->
+                <!-- Allows the link to be opened from a web browser. e.g: launcher would create icon in home page etc... -->
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Allows the deep link to be used without specifying the app name -->
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- URI tutsplus://deeplink -->
                 <!--<data android:scheme="tutsplus" android:host="deeplink"/>-->
                 <data android:scheme="https" android:host="google.com"/>
-                <!-- URI http://www.mydeeplink.com -->
-                <data android:scheme="http" android:host="google.com"/>
+                <!-- URI http://www.mydeeplink.com --> <!--android:pathPrefix="/recipe"-->
+                <data android:scheme="http" android:host="google.com" />
             </intent-filter>
         </activity>
 
